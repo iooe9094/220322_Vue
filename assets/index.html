@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Bootstrap CDN : for design -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/app.css">
+</head>
+<!-- findstr /S "v-text" *.html -->
+
+<body>
+    <!-- Vue 영역 -->
+    <div id="app">
+        <!-- Header 영역 -->
+        <header>
+            <div class="navbar navbar-default">
+                <div class="navbar-header">
+                    <!-- <h1 v-text="sitename"></h1> -->
+                    <h1> {{ sitename }}</h1>
+                </div>
+                <!-- 9. 장바구니 카운트 표시 -->
+                <div class="nav navbar-nav navbar-right cart">
+                    <span class="glyphicon glyphicon-shopping-cart">
+                        {{ cartItemCount }}
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 본문 -->
+        <main>
+            <div class="row">
+                <div class="col-md-2 col-md-offset-1">
+                    <figure>
+                        <!-- 객체의 이미지 주소를 바안딩해서 넣어주세요 -->
+                        <img :src="product.image"></img>
+                    </figure>
+                </div>
+                <div class="col-md-6 col-md-offset-2 description">
+                    <!-- 4. v-text : product의 속성인 title 연결 -->
+                    <h1 v-text="product.title"></h1>
+                    <!-- 5. v-text : product의 속성인 description 연결 -->
+                    <p v-text="product.description"></p>
+                    <!-- 6. v-text : product의 속성인 price 연결 -->
+                    <!-- 7. product.price를 앞에 $ + product.price -->
+                    <!-- 7. product.price가 세자리수마다 쉼표를 찍으세요 -->
+                    <p :class="price">
+                        <!-- {{ product.price | formatPrice }} 7번문제 두 번째 풀이 (권장하지 않음) -->
+                        {{ formatPrice }}
+                        <!-- 7번문제 첫 번째 풀이 -->
+                    </p>
+                    <!-- 8. 클릭 시 addToCart 내에서 cart 배열에 product.id 추가-->
+                    
+                    <!-- 10-1 재고 수량 변수 크기만큼 장바구니가 담기면 아래 버튼 비활성화 (안보이게 하기)-->
+                    <!-- <button v-if="avails" @click="addToCart" class="btn btn-primary btn-lg">장바구니 담기</button> -->
+
+                    <!-- 10번 문제 다른 해설 (비활성화 시키기)-->
+                    <!-- 참일 경우 보이고 -->
+                    <button v-if="avails" @click="addToCart" class="btn btn-primary btn-lg">장바구니 담기</button>
+                    <!-- 거짓일 경우 안보임 -->
+                    <button disabled="true" v-else="avails" class="btn btn-primary btn-lg">장바구니 담기</button>
+                    <br>
+                </div>
+        </main>
+    </div>
+
+    <script>
+        // console.log를 출력하는 변수
+        const APP_LOG_LIFE_CYCLE_EVENT = true;
+        // false일 경우 console.log 작동하지 않음
+
+        let webstore = new Vue({
+            // HTML과 div 영역 연결
+            // data: sitename => "Vue.js 애완용품샵"
+
+            el: "#app",
+            data: {
+                sitename: "Vue.js 애완용품 샵",
+                // product
+                // 객체 
+                // id: 1001, title: "고양이 사료, 25파운드"
+                // description : "당신의 고양이를 위한 <em> 거부할 수 없는</em>"
+                //               ", 유기농 25파운드 사료입니다"
+                // price : 2000
+                // image : "./assets/images/product-fullsize.png"
+                product: {
+                    id: 1001, title: "고양이 사료, 25파운드",
+                    description: "당신의 고양이를 위한 <em>거부할 수 없는</em>,유기농 25파운드 사료입니다",
+                    price: 2000,
+                    image: "/220322_Vue/assets/images/product-fullsize.png"
+                },
+                // 8번 장바구니 배열
+                cart: [],
+                cartItemCount: 0,
+                // 10번 재고
+                availableInventory: 5
+            },
+            methods: {
+                // 장바구니 담기 함수
+                addToCart() {
+                    this.cart.push(this.product.id)
+                    this.cartItemCount += 1;
+                }
+            },
+            // 7번문제 첫 번째 풀이 
+            computed: {
+                // 금액 표시 함수
+                formatPrice() {
+                    return "$" + this.product.price.toLocaleString();
+                },
+
+                // 10. 재고 수량과 장바구니 개수를 비교하는 함수
+                avails: function() {
+                    if (this.availableInventory > this.cart.length) {
+                        return true;
+                    }
+                    // 10번 다른 풀이 2가지
+
+                    // return this.product.availableInventory > this.cart.length
+
+                    // if(this.product.availableInventory > this.cart.length) {
+                    //     return true;
+                    // } else {
+                    //     return false;
+                    // }
+                }
+                },
+                // // 9번문제. 배열의 크기를 표시 : 장바구니 배열 크기 (나는 다르게 풀었음)
+                // cartItemCount() {
+                //    return this.cart.lenght;
+                // }
+            
+
+            // 7번문제 두 번째 풀이 (권장하지 않음)
+            // filters: {
+            //     formatPrice(price) {
+            //         return "$" + price.toLocaleString();
+
+            //     }
+            // },
+
+            // 라이프사이클 등록
+            // beforecreate, created, beforemounted, mounted, 
+            // beforeupdate, updated, beforedestory, destoryed
+            // 그 안에 각각 console.log("각 라이프사이클 이름")
+
+            beforeCreate() {
+                // 프로그램 기법 상 탈출 조건이 먼저 오는것을 권장함.
+                if (APP_LOG_LIFE_CYCLE_EVENT == false) {
+                    return;
+                }
+                console.log('beforeCreate')
+            },
+            created() {
+                if (APP_LOG_LIFE_CYCLE_EVENT == false) {
+                    return;
+                }
+                console.log('created');
+            },
+            beforeMount() {
+                if (APP_LOG_LIFE_CYCLE_EVENT == false) {
+                    return;
+                }
+                console.log('beforeMount');
+            },
+            mounted() {
+                if (APP_LOG_LIFE_CYCLE_EVENT == false) {
+                    return;
+                }
+                console.log('mounted');
+            },
+            beforeUpdate() {
+                if (APP_LOG_LIFE_CYCLE_EVENT == false) {
+                    return;
+                }
+                console.log('beforeUpdate');
+            },
+            updated() {
+                if (APP_LOG_LIFE_CYCLE_EVENT == false) {
+                    return;
+                }
+                console.log('updated');
+            },
+            beforeDestroy() {
+                if (APP_LOG_LIFE_CYCLE_EVENT == false) {
+                    return;
+                }
+                console.log('beforeDestroy');
+            },
+            destroyed() {
+                if (APP_LOG_LIFE_CYCLE_EVENT == false) {
+                    return;
+                }
+                console.log('destroyed');
+            },
+
+        });
+    </script>
+</body>
+
+</html>

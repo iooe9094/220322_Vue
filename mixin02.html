@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Vue cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- lodash cdn -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
+    <link rel="stylesheet" href="../220316_Vue/count_up_down.css">
+</head>
+
+<body>
+    <p>mixin 간단 예제 2</p>
+
+    <script>
+        // mixin 객체 정의
+        let mixin = {
+            data() {
+                return {
+                    message: "hello",
+                    foo: "abc"
+                }
+            }
+        }
+
+        // 부모 뷰
+        // mixin은 '부모'가 중복되는 값을 '우선적'으로 출력함
+        // 즉, 위의 message가 생략되고 아래의 message(goodbye) 출력
+
+        // 나머지 다른 변수일 경우 같이(mix) 출력됨
+
+        new Vue({
+            mixins: [mixin],
+            data() {
+                return {
+                    message: "goodbye",
+                    bar: "def"
+                }
+            },
+            created: function() {
+                // $data : 직접 접근 / Vue에서는 권장하지 않음
+                console.log(this.$data)
+            }
+        });
+    </script>
+</body>
+
+</html>
